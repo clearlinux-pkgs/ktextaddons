@@ -4,10 +4,10 @@
 # Using build pattern: cmake
 #
 Name     : ktextaddons
-Version  : 1.2.0
-Release  : 1
-URL      : https://download.kde.org/stable/ktextaddons/ktextaddons-1.2.0.tar.xz
-Source0  : https://download.kde.org/stable/ktextaddons/ktextaddons-1.2.0.tar.xz
+Version  : 1.3.2
+Release  : 2
+URL      : https://download.kde.org/stable/ktextaddons/ktextaddons-1.3.2.tar.xz
+Source0  : https://download.kde.org/stable/ktextaddons/ktextaddons-1.3.2.tar.xz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : BSD-3-Clause CC0-1.0 GPL-2.0 LGPL-2.0
@@ -61,31 +61,48 @@ locales components for the ktextaddons package.
 
 
 %prep
-%setup -q -n ktextaddons-1.2.0
-cd %{_builddir}/ktextaddons-1.2.0
+%setup -q -n ktextaddons-1.3.2
+cd %{_builddir}/ktextaddons-1.3.2
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1682101389
+export SOURCE_DATE_EPOCH=1689027696
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FCFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
-export FFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
-export CXXFLAGS="$CXXFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz "
+export CFLAGS="$CFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FCFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export FFLAGS="$FFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+export CXXFLAGS="$CXXFLAGS -O3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd "
+%cmake ..
+make  %{?_smp_mflags}
+popd
+mkdir -p clr-build-avx2
+pushd clr-build-avx2
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -Wl,-z,x86-64-v3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd -march=x86-64-v3 "
+export FCFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd -march=x86-64-v3 "
+export FFLAGS="$FFLAGS -O3 -Wl,-z,x86-64-v3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd -march=x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -O3 -Wl,-z,x86-64-v3 -fdebug-types-section -femit-struct-debug-baseonly -ffat-lto-objects -flto=auto -g1 -gno-column-info -gno-variable-location-views -gz=zstd -march=x86-64-v3 "
+export CFLAGS="$CFLAGS -march=x86-64-v3 -m64 -Wl,-z,x86-64-v3"
+export CXXFLAGS="$CXXFLAGS -march=x86-64-v3 -m64 -Wl,-z,x86-64-v3"
+export FFLAGS="$FFLAGS -march=x86-64-v3 -m64 -Wl,-z,x86-64-v3"
+export FCFLAGS="$FCFLAGS -march=x86-64-v3 -m64 -Wl,-z,x86-64-v3"
 %cmake ..
 make  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1682101389
+export SOURCE_DATE_EPOCH=1689027696
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/ktextaddons
 cp %{_builddir}/ktextaddons-%{version}/LICENSES/BSD-3-Clause.txt %{buildroot}/usr/share/package-licenses/ktextaddons/9950d3fdce1cff1f71212fb5abd31453c6ee2f8c || :
@@ -93,6 +110,9 @@ cp %{_builddir}/ktextaddons-%{version}/LICENSES/CC0-1.0.txt %{buildroot}/usr/sha
 cp %{_builddir}/ktextaddons-%{version}/LICENSES/GPL-2.0-or-later.txt %{buildroot}/usr/share/package-licenses/ktextaddons/e712eadfab0d2357c0f50f599ef35ee0d87534cb || :
 cp %{_builddir}/ktextaddons-%{version}/LICENSES/LGPL-2.0-or-later.txt %{buildroot}/usr/share/package-licenses/ktextaddons/20079e8f79713dce80ab09774505773c926afa2a || :
 cp %{_builddir}/ktextaddons-%{version}/metainfo.yaml.license %{buildroot}/usr/share/package-licenses/ktextaddons/7ff5a7dd2c915b2b34329c892e06917c5f82f3a4 || :
+pushd clr-build-avx2
+%make_install_v3  || :
+popd
 pushd clr-build
 %make_install
 popd
@@ -100,6 +120,8 @@ popd
 %find_lang libtextedittexttospeech
 %find_lang libtextgrammarcheck
 %find_lang libtexttranslator
+%find_lang libtextemoticons
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
@@ -110,25 +132,33 @@ popd
 /usr/include/KF5/TextAddonsWidgets/textaddonswidgets/lineeditcatchreturnkey.h
 /usr/include/KF5/TextAddonsWidgets/textaddonswidgets/textaddonswidgets_export.h
 /usr/include/KF5/TextAddonsWidgets/textaddonswidgets_version.h
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/AutoCorrection
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/AutoCorrectionLanguage
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/AutoCorrectionSettings
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/AutoCorrectionTextEdit
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/AutoCorrectionUtils
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/AutoCorrectionWidget
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/SelectSpecialCharDialog
-/usr/include/KF5/TextAutoCorrection/TextAutoCorrection/TextAutoCorrectionSettings
-/usr/include/KF5/TextAutoCorrection/textautocorrection/autocorrection.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/autocorrectionlanguage.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/autocorrectionsettings.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/autocorrectiontextedit.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/autocorrectionutils.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/autocorrectionwidget.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/selectspecialchardialog.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/textautocorrection_export.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/textautocorrectionsetting_base.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection/textautocorrectionsettings.h
-/usr/include/KF5/TextAutoCorrection/textautocorrection_version.h
+/usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/AutoCorrection
+/usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/AutoCorrectionSettings
+/usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/AutoCorrectionUtils
+/usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/ImportAbstractAutocorrection
+/usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/ImportKMailAutocorrection
+/usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/ImportLibreOfficeAutocorrection
+/usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/TextAutoCorrectionSettings
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/autocorrection.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/autocorrectionsettings.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/autocorrectionutils.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/importabstractautocorrection.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/importkmailautocorrection.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/importlibreofficeautocorrection.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/textautocorrectioncore_export.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/textautocorrectionsetting_base.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore/textautocorrectionsettings.h
+/usr/include/KF5/TextAutoCorrectionCore/textautocorrectioncore_version.h
+/usr/include/KF5/TextAutoCorrectionWidgets/TextAutoCorrectionWidgets/AutoCorrectionLanguage
+/usr/include/KF5/TextAutoCorrectionWidgets/TextAutoCorrectionWidgets/AutoCorrectionTextEdit
+/usr/include/KF5/TextAutoCorrectionWidgets/TextAutoCorrectionWidgets/AutoCorrectionWidget
+/usr/include/KF5/TextAutoCorrectionWidgets/TextAutoCorrectionWidgets/SelectSpecialCharDialog
+/usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets/autocorrectionlanguage.h
+/usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets/autocorrectiontextedit.h
+/usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets/autocorrectionwidget.h
+/usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets/selectspecialchardialog.h
+/usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets/textautocorrectionwidgets_export.h
+/usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets_version.h
 /usr/include/KF5/TextEditTextToSpeech/TextEditTextToSpeech/AbstractTextToSpeechConfigInterface
 /usr/include/KF5/TextEditTextToSpeech/TextEditTextToSpeech/AbstractTextToSpeechInterface
 /usr/include/KF5/TextEditTextToSpeech/TextEditTextToSpeech/TextToSpeech
@@ -156,6 +186,7 @@ popd
 /usr/include/KF5/TextEmoticonsCore/TextEmoticonsCore/EmojiProxyModel
 /usr/include/KF5/TextEmoticonsCore/TextEmoticonsCore/EmoticonCategory
 /usr/include/KF5/TextEmoticonsCore/TextEmoticonsCore/EmoticonUnicodeUtils
+/usr/include/KF5/TextEmoticonsCore/TextEmoticonsCore/RunningAnimatedImage
 /usr/include/KF5/TextEmoticonsCore/TextEmoticonsCore/UnicodeEmoticon
 /usr/include/KF5/TextEmoticonsCore/TextEmoticonsCore/UnicodeEmoticonManager
 /usr/include/KF5/TextEmoticonsCore/TextEmoticonsCore/UnicodeEmoticonParser
@@ -166,6 +197,7 @@ popd
 /usr/include/KF5/TextEmoticonsCore/textemoticonscore/emojiproxymodel.h
 /usr/include/KF5/TextEmoticonsCore/textemoticonscore/emoticoncategory.h
 /usr/include/KF5/TextEmoticonsCore/textemoticonscore/emoticonunicodeutils.h
+/usr/include/KF5/TextEmoticonsCore/textemoticonscore/runninganimatedimage.h
 /usr/include/KF5/TextEmoticonsCore/textemoticonscore/textemoticonscore_export.h
 /usr/include/KF5/TextEmoticonsCore/textemoticonscore/unicodeemoticon.h
 /usr/include/KF5/TextEmoticonsCore/textemoticonscore/unicodeemoticonmanager.h
@@ -263,10 +295,14 @@ popd
 /usr/lib64/cmake/KF5TextAddonsWidgets/KF5TextAddonsWidgetsConfigVersion.cmake
 /usr/lib64/cmake/KF5TextAddonsWidgets/KF5TextAddonsWidgetsTargets-relwithdebinfo.cmake
 /usr/lib64/cmake/KF5TextAddonsWidgets/KF5TextAddonsWidgetsTargets.cmake
-/usr/lib64/cmake/KF5TextAutoCorrection/KF5TextAutoCorrectionConfig.cmake
-/usr/lib64/cmake/KF5TextAutoCorrection/KF5TextAutoCorrectionConfigVersion.cmake
-/usr/lib64/cmake/KF5TextAutoCorrection/KF5TextAutoCorrectionTargets-relwithdebinfo.cmake
-/usr/lib64/cmake/KF5TextAutoCorrection/KF5TextAutoCorrectionTargets.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionCore/KF5TextAutoCorrectionCoreConfig.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionCore/KF5TextAutoCorrectionCoreConfigVersion.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionCore/KF5TextAutoCorrectionCoreTargets-relwithdebinfo.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionCore/KF5TextAutoCorrectionCoreTargets.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionWidgets/KF5TextAutoCorrectionWidgetsConfig.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionWidgets/KF5TextAutoCorrectionWidgetsConfigVersion.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionWidgets/KF5TextAutoCorrectionWidgetsTargets-relwithdebinfo.cmake
+/usr/lib64/cmake/KF5TextAutoCorrectionWidgets/KF5TextAutoCorrectionWidgetsTargets.cmake
 /usr/lib64/cmake/KF5TextEditTextToSpeech/KF5TextEditTextToSpeechConfig.cmake
 /usr/lib64/cmake/KF5TextEditTextToSpeech/KF5TextEditTextToSpeechConfigVersion.cmake
 /usr/lib64/cmake/KF5TextEditTextToSpeech/KF5TextEditTextToSpeechTargets-relwithdebinfo.cmake
@@ -288,13 +324,15 @@ popd
 /usr/lib64/cmake/KF5TextTranslator/KF5TextTranslatorTargets-relwithdebinfo.cmake
 /usr/lib64/cmake/KF5TextTranslator/KF5TextTranslatorTargets.cmake
 /usr/lib64/libKF5TextAddonsWidgets.so
-/usr/lib64/libKF5TextAutoCorrection.so
+/usr/lib64/libKF5TextAutoCorrectionCore.so
+/usr/lib64/libKF5TextAutoCorrectionWidgets.so
 /usr/lib64/libKF5TextEditTextToSpeech.so
 /usr/lib64/libKF5TextEmoticonsCore.so
 /usr/lib64/libKF5TextEmoticonsWidgets.so
 /usr/lib64/libKF5TextGrammarCheck.so
 /usr/lib64/libKF5TextTranslator.so
-/usr/lib64/qt5/mkspecs/modules/qt_TextAutoCorrection.pri
+/usr/lib64/qt5/mkspecs/modules/qt_TextAutoCorrectionCore.pri
+/usr/lib64/qt5/mkspecs/modules/qt_TextAutoCorrectionWidgets.pri
 /usr/lib64/qt5/mkspecs/modules/qt_TextEditTextToSpeech.pri
 /usr/lib64/qt5/mkspecs/modules/qt_TextGrammarCheck.pri
 /usr/lib64/qt5/mkspecs/modules/qt_TextTranslator.pri
@@ -304,20 +342,37 @@ popd
 
 %files lib
 %defattr(-,root,root,-)
+/V3/usr/lib64/libKF5TextAddonsWidgets.so.1.3.2
+/V3/usr/lib64/libKF5TextAutoCorrectionCore.so.1.3.2
+/V3/usr/lib64/libKF5TextAutoCorrectionWidgets.so.1.3.2
+/V3/usr/lib64/libKF5TextEditTextToSpeech.so.1.3.2
+/V3/usr/lib64/libKF5TextEmoticonsCore.so.1.3.2
+/V3/usr/lib64/libKF5TextEmoticonsWidgets.so.1.3.2
+/V3/usr/lib64/libKF5TextGrammarCheck.so.1.3.2
+/V3/usr/lib64/libKF5TextTranslator.so.1.3.2
+/V3/usr/lib64/qt5/plugins/designer/texttranslatorwidgets5.so
+/V3/usr/lib64/qt5/plugins/kf5/translator/translator_bing.so
+/V3/usr/lib64/qt5/plugins/kf5/translator/translator_deepl.so
+/V3/usr/lib64/qt5/plugins/kf5/translator/translator_google.so
+/V3/usr/lib64/qt5/plugins/kf5/translator/translator_libretranslate.so
+/V3/usr/lib64/qt5/plugins/kf5/translator/translator_lingva.so
+/V3/usr/lib64/qt5/plugins/kf5/translator/translator_yandex.so
 /usr/lib64/libKF5TextAddonsWidgets.so.1
-/usr/lib64/libKF5TextAddonsWidgets.so.1.2.0
-/usr/lib64/libKF5TextAutoCorrection.so.1
-/usr/lib64/libKF5TextAutoCorrection.so.1.2.0
+/usr/lib64/libKF5TextAddonsWidgets.so.1.3.2
+/usr/lib64/libKF5TextAutoCorrectionCore.so.1
+/usr/lib64/libKF5TextAutoCorrectionCore.so.1.3.2
+/usr/lib64/libKF5TextAutoCorrectionWidgets.so.1
+/usr/lib64/libKF5TextAutoCorrectionWidgets.so.1.3.2
 /usr/lib64/libKF5TextEditTextToSpeech.so.1
-/usr/lib64/libKF5TextEditTextToSpeech.so.1.2.0
+/usr/lib64/libKF5TextEditTextToSpeech.so.1.3.2
 /usr/lib64/libKF5TextEmoticonsCore.so.1
-/usr/lib64/libKF5TextEmoticonsCore.so.1.2.0
+/usr/lib64/libKF5TextEmoticonsCore.so.1.3.2
 /usr/lib64/libKF5TextEmoticonsWidgets.so.1
-/usr/lib64/libKF5TextEmoticonsWidgets.so.1.2.0
+/usr/lib64/libKF5TextEmoticonsWidgets.so.1.3.2
 /usr/lib64/libKF5TextGrammarCheck.so.1
-/usr/lib64/libKF5TextGrammarCheck.so.1.2.0
+/usr/lib64/libKF5TextGrammarCheck.so.1.3.2
 /usr/lib64/libKF5TextTranslator.so.1
-/usr/lib64/libKF5TextTranslator.so.1.2.0
+/usr/lib64/libKF5TextTranslator.so.1.3.2
 /usr/lib64/qt5/plugins/designer/texttranslatorwidgets5.so
 /usr/lib64/qt5/plugins/kf5/translator/translator_bing.so
 /usr/lib64/qt5/plugins/kf5/translator/translator_deepl.so
@@ -334,6 +389,6 @@ popd
 /usr/share/package-licenses/ktextaddons/9950d3fdce1cff1f71212fb5abd31453c6ee2f8c
 /usr/share/package-licenses/ktextaddons/e712eadfab0d2357c0f50f599ef35ee0d87534cb
 
-%files locales -f libtextautocorrection.lang -f libtextedittexttospeech.lang -f libtextgrammarcheck.lang -f libtexttranslator.lang
+%files locales -f libtextautocorrection.lang -f libtextedittexttospeech.lang -f libtextgrammarcheck.lang -f libtexttranslator.lang -f libtextemoticons.lang
 %defattr(-,root,root,-)
 
