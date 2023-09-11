@@ -4,13 +4,13 @@
 # Using build pattern: cmake
 #
 Name     : ktextaddons
-Version  : 1.4.1
-Release  : 3
-URL      : https://download.kde.org/stable/ktextaddons/ktextaddons-1.4.1.tar.xz
-Source0  : https://download.kde.org/stable/ktextaddons/ktextaddons-1.4.1.tar.xz
+Version  : 1.5.0
+Release  : 4
+URL      : https://download.kde.org/stable/ktextaddons/ktextaddons-1.5.0.tar.xz
+Source0  : https://download.kde.org/stable/ktextaddons/ktextaddons-1.5.0.tar.xz
 Summary  : No detailed summary available
 Group    : Development/Tools
-License  : BSD-3-Clause CC0-1.0 GPL-2.0 LGPL-2.0
+License  : BSD-3-Clause CC0-1.0 GPL-2.0 LGPL-2.0 LGPL-2.1
 Requires: ktextaddons-data = %{version}-%{release}
 Requires: ktextaddons-lib = %{version}-%{release}
 Requires: ktextaddons-license = %{version}-%{release}
@@ -18,6 +18,7 @@ Requires: ktextaddons-locales = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : buildreq-kde
 BuildRequires : extra-cmake-modules-data
+BuildRequires : syntax-highlighting-dev
 # Suppress stripping binaries
 %define __strip /bin/true
 %define debug_package %{nil}
@@ -72,15 +73,15 @@ locales components for the ktextaddons package.
 
 
 %prep
-%setup -q -n ktextaddons-1.4.1
-cd %{_builddir}/ktextaddons-1.4.1
+%setup -q -n ktextaddons-1.5.0
+cd %{_builddir}/ktextaddons-1.5.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1693234144
+export SOURCE_DATE_EPOCH=1694458317
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -113,13 +114,14 @@ make  %{?_smp_mflags}
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1693234144
+export SOURCE_DATE_EPOCH=1694458317
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/ktextaddons
 cp %{_builddir}/ktextaddons-%{version}/LICENSES/BSD-3-Clause.txt %{buildroot}/usr/share/package-licenses/ktextaddons/9950d3fdce1cff1f71212fb5abd31453c6ee2f8c || :
 cp %{_builddir}/ktextaddons-%{version}/LICENSES/CC0-1.0.txt %{buildroot}/usr/share/package-licenses/ktextaddons/8287b608d3fa40ef401339fd907ca1260c964123 || :
 cp %{_builddir}/ktextaddons-%{version}/LICENSES/GPL-2.0-or-later.txt %{buildroot}/usr/share/package-licenses/ktextaddons/e712eadfab0d2357c0f50f599ef35ee0d87534cb || :
 cp %{_builddir}/ktextaddons-%{version}/LICENSES/LGPL-2.0-or-later.txt %{buildroot}/usr/share/package-licenses/ktextaddons/20079e8f79713dce80ab09774505773c926afa2a || :
+cp %{_builddir}/ktextaddons-%{version}/LICENSES/LGPL-2.1-or-later.txt %{buildroot}/usr/share/package-licenses/ktextaddons/6f1f675aa5f6a2bbaa573b8343044b166be28399 || :
 cp %{_builddir}/ktextaddons-%{version}/metainfo.yaml.license %{buildroot}/usr/share/package-licenses/ktextaddons/7ff5a7dd2c915b2b34329c892e06917c5f82f3a4 || :
 pushd clr-build-avx2
 %make_install_v3  || :
@@ -141,13 +143,16 @@ popd
 %files data
 %defattr(-,root,root,-)
 /usr/share/qlogging-categories5/ktextaddons.categories
+/usr/share/qlogging-categories5/ktextaddons.renamecategories
 
 %files dev
 %defattr(-,root,root,-)
 /usr/include/KF5/TextAddonsWidgets/TextAddonsWidgets/LineEditCatchReturnKey
 /usr/include/KF5/TextAddonsWidgets/TextAddonsWidgets/SelectSpecialCharDialog
+/usr/include/KF5/TextAddonsWidgets/TextAddonsWidgets/SlideContainer
 /usr/include/KF5/TextAddonsWidgets/textaddonswidgets/lineeditcatchreturnkey.h
 /usr/include/KF5/TextAddonsWidgets/textaddonswidgets/selectspecialchardialog.h
+/usr/include/KF5/TextAddonsWidgets/textaddonswidgets/slidecontainer.h
 /usr/include/KF5/TextAddonsWidgets/textaddonswidgets/textaddonswidgets_export.h
 /usr/include/KF5/TextAddonsWidgets/textaddonswidgets_version.h
 /usr/include/KF5/TextAutoCorrectionCore/TextAutoCorrectionCore/AutoCorrection
@@ -175,6 +180,28 @@ popd
 /usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets/autocorrectionwidget.h
 /usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets/textautocorrectionwidgets_export.h
 /usr/include/KF5/TextAutoCorrectionWidgets/textautocorrectionwidgets_version.h
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/PlainTextEditFindBar
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/PlainTextEditor
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/PlainTextEditorWidget
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/PlainTextSyntaxSpellCheckingHighlighter
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/RichTextEditFindBar
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/RichTextEditor
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/RichTextEditorWidget
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/TextEditFindBarBase
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/TextEditorCompleter
+/usr/include/KF5/TextCustomEditor/TextCustomEditor/TextGotoLineWidget
+/usr/include/KF5/TextCustomEditor/textcustomeditor/plaintexteditfindbar.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/plaintexteditor.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/plaintexteditorwidget.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/plaintextsyntaxspellcheckinghighlighter.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/richtexteditfindbar.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/richtexteditor.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/richtexteditorwidget.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/textcustomeditor_export.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/texteditfindbarbase.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/texteditorcompleter.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor/textgotolinewidget.h
+/usr/include/KF5/TextCustomEditor/textcustomeditor_version.h
 /usr/include/KF5/TextEditTextToSpeech/TextEditTextToSpeech/AbstractTextToSpeechConfigInterface
 /usr/include/KF5/TextEditTextToSpeech/TextEditTextToSpeech/AbstractTextToSpeechInterface
 /usr/include/KF5/TextEditTextToSpeech/TextEditTextToSpeech/TextToSpeech
@@ -323,6 +350,10 @@ popd
 /usr/lib64/cmake/KF5TextAutoCorrectionWidgets/KF5TextAutoCorrectionWidgetsConfigVersion.cmake
 /usr/lib64/cmake/KF5TextAutoCorrectionWidgets/KF5TextAutoCorrectionWidgetsTargets-relwithdebinfo.cmake
 /usr/lib64/cmake/KF5TextAutoCorrectionWidgets/KF5TextAutoCorrectionWidgetsTargets.cmake
+/usr/lib64/cmake/KF5TextCustomEditor/KF5TextCustomEditorConfig.cmake
+/usr/lib64/cmake/KF5TextCustomEditor/KF5TextCustomEditorConfigVersion.cmake
+/usr/lib64/cmake/KF5TextCustomEditor/KF5TextCustomEditorTargets-relwithdebinfo.cmake
+/usr/lib64/cmake/KF5TextCustomEditor/KF5TextCustomEditorTargets.cmake
 /usr/lib64/cmake/KF5TextEditTextToSpeech/KF5TextEditTextToSpeechConfig.cmake
 /usr/lib64/cmake/KF5TextEditTextToSpeech/KF5TextEditTextToSpeechConfigVersion.cmake
 /usr/lib64/cmake/KF5TextEditTextToSpeech/KF5TextEditTextToSpeechTargets-relwithdebinfo.cmake
@@ -350,6 +381,7 @@ popd
 /usr/lib64/libKF5TextAddonsWidgets.so
 /usr/lib64/libKF5TextAutoCorrectionCore.so
 /usr/lib64/libKF5TextAutoCorrectionWidgets.so
+/usr/lib64/libKF5TextCustomEditor.so
 /usr/lib64/libKF5TextEditTextToSpeech.so
 /usr/lib64/libKF5TextEmoticonsCore.so
 /usr/lib64/libKF5TextEmoticonsWidgets.so
@@ -362,20 +394,24 @@ popd
 /usr/lib64/qt5/mkspecs/modules/qt_TextGrammarCheck.pri
 /usr/lib64/qt5/mkspecs/modules/qt_TextTranslator.pri
 /usr/lib64/qt5/mkspecs/modules/qt_textaddonswidgets.pri
+/usr/lib64/qt5/mkspecs/modules/qt_textcustomeditor.pri
 /usr/lib64/qt5/mkspecs/modules/qt_textemoticonscore.pri
 /usr/lib64/qt5/mkspecs/modules/qt_textemoticonswidgets.pri
+/usr/lib64/qt5/mkspecs/modules/qt_textutils.pri
 
 %files lib
 %defattr(-,root,root,-)
-/V3/usr/lib64/libKF5TextAddonsWidgets.so.1.4.1
-/V3/usr/lib64/libKF5TextAutoCorrectionCore.so.1.4.1
-/V3/usr/lib64/libKF5TextAutoCorrectionWidgets.so.1.4.1
-/V3/usr/lib64/libKF5TextEditTextToSpeech.so.1.4.1
-/V3/usr/lib64/libKF5TextEmoticonsCore.so.1.4.1
-/V3/usr/lib64/libKF5TextEmoticonsWidgets.so.1.4.1
-/V3/usr/lib64/libKF5TextGrammarCheck.so.1.4.1
-/V3/usr/lib64/libKF5TextTranslator.so.1.4.1
-/V3/usr/lib64/libKF5TextUtils.so.1.4.1
+/V3/usr/lib64/libKF5TextAddonsWidgets.so.1.5.0
+/V3/usr/lib64/libKF5TextAutoCorrectionCore.so.1.5.0
+/V3/usr/lib64/libKF5TextAutoCorrectionWidgets.so.1.5.0
+/V3/usr/lib64/libKF5TextCustomEditor.so.1.5.0
+/V3/usr/lib64/libKF5TextEditTextToSpeech.so.1.5.0
+/V3/usr/lib64/libKF5TextEmoticonsCore.so.1.5.0
+/V3/usr/lib64/libKF5TextEmoticonsWidgets.so.1.5.0
+/V3/usr/lib64/libKF5TextGrammarCheck.so.1.5.0
+/V3/usr/lib64/libKF5TextTranslator.so.1.5.0
+/V3/usr/lib64/libKF5TextUtils.so.1.5.0
+/V3/usr/lib64/qt5/plugins/designer/textcustomeditor.so
 /V3/usr/lib64/qt5/plugins/designer/texttranslatorwidgets5.so
 /V3/usr/lib64/qt5/plugins/kf5/translator/translator_bing.so
 /V3/usr/lib64/qt5/plugins/kf5/translator/translator_deepl.so
@@ -384,23 +420,26 @@ popd
 /V3/usr/lib64/qt5/plugins/kf5/translator/translator_lingva.so
 /V3/usr/lib64/qt5/plugins/kf5/translator/translator_yandex.so
 /usr/lib64/libKF5TextAddonsWidgets.so.1
-/usr/lib64/libKF5TextAddonsWidgets.so.1.4.1
+/usr/lib64/libKF5TextAddonsWidgets.so.1.5.0
 /usr/lib64/libKF5TextAutoCorrectionCore.so.1
-/usr/lib64/libKF5TextAutoCorrectionCore.so.1.4.1
+/usr/lib64/libKF5TextAutoCorrectionCore.so.1.5.0
 /usr/lib64/libKF5TextAutoCorrectionWidgets.so.1
-/usr/lib64/libKF5TextAutoCorrectionWidgets.so.1.4.1
+/usr/lib64/libKF5TextAutoCorrectionWidgets.so.1.5.0
+/usr/lib64/libKF5TextCustomEditor.so.1
+/usr/lib64/libKF5TextCustomEditor.so.1.5.0
 /usr/lib64/libKF5TextEditTextToSpeech.so.1
-/usr/lib64/libKF5TextEditTextToSpeech.so.1.4.1
+/usr/lib64/libKF5TextEditTextToSpeech.so.1.5.0
 /usr/lib64/libKF5TextEmoticonsCore.so.1
-/usr/lib64/libKF5TextEmoticonsCore.so.1.4.1
+/usr/lib64/libKF5TextEmoticonsCore.so.1.5.0
 /usr/lib64/libKF5TextEmoticonsWidgets.so.1
-/usr/lib64/libKF5TextEmoticonsWidgets.so.1.4.1
+/usr/lib64/libKF5TextEmoticonsWidgets.so.1.5.0
 /usr/lib64/libKF5TextGrammarCheck.so.1
-/usr/lib64/libKF5TextGrammarCheck.so.1.4.1
+/usr/lib64/libKF5TextGrammarCheck.so.1.5.0
 /usr/lib64/libKF5TextTranslator.so.1
-/usr/lib64/libKF5TextTranslator.so.1.4.1
+/usr/lib64/libKF5TextTranslator.so.1.5.0
 /usr/lib64/libKF5TextUtils.so.1
-/usr/lib64/libKF5TextUtils.so.1.4.1
+/usr/lib64/libKF5TextUtils.so.1.5.0
+/usr/lib64/qt5/plugins/designer/textcustomeditor.so
 /usr/lib64/qt5/plugins/designer/texttranslatorwidgets5.so
 /usr/lib64/qt5/plugins/kf5/translator/translator_bing.so
 /usr/lib64/qt5/plugins/kf5/translator/translator_deepl.so
@@ -412,6 +451,7 @@ popd
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/ktextaddons/20079e8f79713dce80ab09774505773c926afa2a
+/usr/share/package-licenses/ktextaddons/6f1f675aa5f6a2bbaa573b8343044b166be28399
 /usr/share/package-licenses/ktextaddons/7ff5a7dd2c915b2b34329c892e06917c5f82f3a4
 /usr/share/package-licenses/ktextaddons/8287b608d3fa40ef401339fd907ca1260c964123
 /usr/share/package-licenses/ktextaddons/9950d3fdce1cff1f71212fb5abd31453c6ee2f8c
